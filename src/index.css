@@ -1,6 +1,10 @@
 body {
   margin: 0;
-  background-color: #26284e;
+  /* background: linear-gradient(75deg, #1caab1 0.33%, #1e4b73 85.84%); */
+  background-color: #23272e;
+  /* background-image: url("./assets/Gradient\ background.svg"); */
+  background-repeat: no-repeat;
+  background-size: cover;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;

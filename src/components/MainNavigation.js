@@ -1,52 +1,25 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
 
 import styled from "@emotion/styled";
-import HomeIcon from "@mui/icons-material/Home";
-import PersonIcon from "@mui/icons-material/Person";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import MainLogoCustom from "../assets/Logo_blue_48px.svg";
-import {
-  AppBar,
-  Box,
-  Button,
-  Icon,
-  Menu,
-  MenuItem,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+
+// import PersonIcon from "@mui/icons-material/Person";
+// import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
+import PeopleIcon from "@mui/icons-material/People";
+
+import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material";
 
 export default function MainNavigation() {
-  const navigate = useNavigate();
-
-  // const handleClickPatient = (event) => {
-  //   setPatientAnchorEl(event.currentTarget);
-  // };
-
-  // const handleClosePatient = () => {
-  //   setPatientAnchorEl(null);
-  // };
-
-  // const handleClickDoctor = (event) => {
-  //   setDoctorAnchorEl(event.currentTarget);
-  // };
-
-  // const handleCloseDoctor = () => {
-  //   setDoctorAnchorEl(null);
-  // };
-
-  // const buttonRef = useImperativeHandle(null);
-
   const TitleCaseButton = styled(Button)({
     textTransform: "capitalize",
     fontWeight: 500,
     fontFamily: "Open Sans, sans-serif",
-    letterSpacing: "1px",
+    letterSpacing: "0.3px",
     fontSize: "20px",
-    color: "#757db5",
+    // color: "#757db5",
+    // color: "#92a2c6",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -61,36 +34,36 @@ export default function MainNavigation() {
       alignItems: "center",
       textDecoration: "none",
       color: "inherit",
+      // "&.active": {
+      //   color: "green",
+      // },
+      // activeLink: { color: "red" },
     },
     icon: {
       fontSize: "2rem !important",
     },
   };
 
-  const MainLogo = (
-    <Icon
-      sx={{
-        height: "100%",
-        width: "100%",
-      }}
-    >
-      <img alt="logo" src={MainLogoCustom} />
-    </Icon>
-  );
+  // const MainLogo = (
+  //   <Icon
+  //     sx={{
+  //       height: "100%",
+  //       width: "100%",
+  //     }}
+  //   >
+  //     <img alt="logo" src={MainLogoCustom} />
+  //   </Icon>
+  // );
 
   const LogoButton = styled(Button)({
     "& .MuiSvgIcon-root": {
-      // width: "auto",
-
+      fontSize: "2rem",
       letterSpacing: "1px",
-      "&:hover": {
-        backgroundColor: "rgba(117,125,181,0.25)",
-      },
     },
   });
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#373d70" }} elevation={0}>
+    <AppBar position="static" sx={{ backgroundColor: "#1e2227" }} elevation={0}>
       <Toolbar
         sx={{
           display: "flex",
@@ -107,42 +80,89 @@ export default function MainNavigation() {
         >
           <Link to="/" sx={styles.link}>
             <LogoButton
-              startIcon={MainLogo}
+              startIcon={
+                <ElectricBoltIcon
+                  sx={{
+                    ...styles.icon,
+                    color: "#E55897",
+                  }}
+                />
+              }
               sx={{
                 height: "3rem",
                 width: "3rem",
                 ml: "2.5rem",
-                mr: "2.5rem",
-                // "&:hover": {
-                //   backgroundColor: "rgba(117,125,181,0.25)",
-                // },
+                mr: "3rem",
               }}
             >
               <Typography
                 variant="h5"
                 component="div"
-                sx={{ flexGrow: 1, color: "#757db5", fontWeight: "700" }}
+                sx={{
+                  flexGrow: 1,
+                  fontWeight: "700",
+                  textTransform: "none",
+                  background:
+                    "linear-gradient(90deg, #E55897 0%, rgba(186, 108, 236, 0.76) 103.53%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  textFillColor: "transparent",
+                }}
               >
-                Trivia
+                ThinkFast
               </Typography>
             </LogoButton>
           </Link>
         </Box>
 
         <Stack direction="row" spacing={1} sx={{ paddingLeft: "1rem" }}>
-          <Link style={styles.link} to="/">
-            <TitleCaseButton startIcon={<HomeIcon sx={styles.icon} />}>
-              Home
-            </TitleCaseButton>
-          </Link>
-
-          <Link style={styles.link} to="/appointments">
+          <NavLink
+            // style={styles.link}
+            to="/quizzes/our"
+            // activeClassName="active-link"
+            // activeStyle={{ color: "red" }}
+            // className={({ isActive }) => (isActive ? "active-link" : "")}
+            style={({ isActive }) =>
+              isActive
+                ? {
+                    ...styles.link,
+                    background: "#2c313c",
+                    borderRadius: "0.2rem",
+                  }
+                : { ...styles.link, background: "none" }
+            }
+          >
             <TitleCaseButton
-              startIcon={<EventAvailableIcon sx={styles.icon} />}
+              startIcon={<WorkspacePremiumIcon sx={styles.icon} />}
+              sx={{ color: "#92a2c6" }}
             >
-              Appointments
+              Our Trivia
             </TitleCaseButton>
-          </Link>
+          </NavLink>
+
+          <NavLink
+            style={({ isActive }) =>
+              isActive
+                ? {
+                    ...styles.link,
+                    background: "#2c313c",
+                    borderRadius: "0.2rem",
+                  }
+                : { ...styles.link, background: "none" }
+            }
+            to="/quizzes/community"
+            // activeClassName="active-link"
+            // activeStyle={{ color: "red" }}
+            // className={({ isActive }) => (isActive ? "active-link" : "")}
+          >
+            <TitleCaseButton
+              startIcon={<PeopleIcon sx={styles.icon} />}
+              sx={{ color: "#92a2c6" }}
+            >
+              Community Trivia
+            </TitleCaseButton>
+          </NavLink>
         </Stack>
       </Toolbar>
     </AppBar>
