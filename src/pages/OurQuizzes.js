@@ -4,12 +4,12 @@ import CategoryCard from "../components/CategoryCard";
 import Quiz from "../components/Quiz";
 
 export default function OurQuizzes() {
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState();
 
   const categories = [
     { id: 1, name: "History" },
     { id: 2, name: "Movies" },
-    { id: 3, name: "Science" },
+    { id: 3, name: "Geography" },
     { id: 4, name: "Sports" },
     { id: 5, name: "Anime" },
     { id: 6, name: "Video Games" },
@@ -21,7 +21,7 @@ export default function OurQuizzes() {
     <Box sx={{ p: "2rem" }}>
       <Grid container spacing={2}>
         {categories.map((category) => (
-          <Grid item key={category.id} xs={6} md={3}>
+          <Grid item key={category.id} xs={12} sm={6} md={4} lg={3}>
             <CategoryCard
               category={category}
               setSelectedCategory={setSelectedCategory}
@@ -29,8 +29,8 @@ export default function OurQuizzes() {
           </Grid>
         ))}
       </Grid>
-      {selectedCategory && console.log("Selected category: ", selectedCategory)}
-      <Quiz />
+      {/* {selectedCategory && console.log("Selected category: ", selectedCategory)} */}
+      {selectedCategory && <Quiz selectedCategory={selectedCategory} />}
     </Box>
   );
 }

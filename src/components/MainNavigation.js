@@ -94,6 +94,7 @@ export default function MainNavigation() {
                 ml: "2.5rem",
                 mr: "3rem",
               }}
+              disableElevation
             >
               <Typography
                 variant="h5"
