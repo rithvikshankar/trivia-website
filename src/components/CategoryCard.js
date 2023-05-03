@@ -9,9 +9,14 @@ export default function CategoryCard(props) {
     props.setSelectedCategory(props.category.id);
   };
 
+  const handleBlur = () => {
+    setClicked(false);
+  };
+
   return (
     <Paper
       onClick={handleClick}
+      onBlur={handleBlur}
       elevation={0}
       sx={{
         p: 2,

@@ -1,4 +1,7 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Menu, MenuItem, Typography } from "@mui/material";
+import styled from "@emotion/styled";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+
 import React, { useEffect, useState } from "react";
 
 const category = {
@@ -19,17 +22,36 @@ export default function Quiz(props) {
   const [optionColor, setOptionColor] = useState({});
   const [timeoutId, setTimeoutId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [playAgain, setPlayAgain] = useState(false);
+  const [difficulty, setDifficulty] = useState(null);
+  const [difficultyAnchorEl, setDifficultyAnchorEl] = useState(null);
+
+  const handleClickDifficulty = (event) => {
+    setDifficultyAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseDifficulty = () => {
+    setDifficultyAnchorEl(null);
+  };
 
   const categoryId = category[props.selectedCategory];
+
+  const MenuItemMod = styled(MenuItem)({
+    "&:hover": { background: "black" },
+  });
 
   // Fetch questions from the API
   // Call the fetchQuestions function when the component mounts
   useEffect(() => {
     const fetchQuestions = async () => {
       setIsLoading(true);
-      const response = await fetch(
-        `https://opentdb.com/api.php?amount=10&category=${categoryId}&difficulty=easy&type=multiple`
-      );
+      let response;
+      if (difficulty && categoryId) {
+        response = await fetch(
+          `https://opentdb.com/api.php?amount=10&category=${categoryId}&difficulty=${difficulty}&type=multiple`
+        );
+      }
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -49,12 +71,14 @@ export default function Quiz(props) {
 
       setQuestions(shuffledQuestions);
       setIsLoading(false);
+      setCurrentQuestion(0);
+      setScore(0);
     };
 
     fetchQuestions();
-  }, [categoryId]);
+  }, [categoryId, playAgain, props.selectedCategory, difficulty]);
 
-  function handleAnswer(userAnswer) {
+  const handleAnswer = (userAnswer) => {
     clearTimeout(timeoutId);
 
     // Check if the answer is correct
@@ -85,29 +109,30 @@ export default function Quiz(props) {
       }, 500);
       setTimeoutId(timeoutId);
     }
-  }
+  };
 
   // Decodes the inner HTML from the encoded string
-  function decodeEntities(encodedString) {
+  const decodeEntities = (encodedString) => {
     const div = document.createElement("div");
     div.innerHTML = encodedString;
     return div.innerText;
-  }
+  };
+
+  const handlePlayAgain = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setPlayAgain(!playAgain);
+  };
 
   // Render the current question and its options
-  function renderQuestion() {
+  const renderQuestion = () => {
     const question = questions[currentQuestion];
     let questionTitle = `Q${currentQuestion + 1}. ${decodeEntities(
       question.question
     )}`;
 
     return (
-      <Box
-        sx={{
-          color: "#92a2c6",
-          // textAlign: "center",
-        }}
-      >
+      <Box sx={{ color: "#92a2c6" }}>
         <Typography variant="h5" sx={{ mb: "1rem" }}>
           {questionTitle}
         </Typography>
@@ -125,9 +150,12 @@ export default function Quiz(props) {
                   width: "100%",
                   color: optionColor[option],
                   textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
+                  // whiteSpace: "nowrap",
+                  // p: "0.5rem",
+                  flexGrow: 1,
                 }}
               >
+                {/* Options in plain text */}
                 {decodeEntities(option)}
               </Button>
             </Grid>
@@ -135,10 +163,10 @@ export default function Quiz(props) {
         </Grid>
       </Box>
     );
-  }
+  };
 
   // Render the final score
-  function renderScore() {
+  const renderScore = () => {
     return (
       <>
         <Box
@@ -166,59 +194,134 @@ export default function Quiz(props) {
             justifyContent: "center",
           }}
         >
-          <Button variant="outlined">Play Again</Button>
+          <Button variant="outlined" onClick={handlePlayAgain}>
+            Play Again
+          </Button>
         </Box>
       </>
     );
-  }
+  };
 
   return (
     <>
-      {!isLoading && (
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mx: "auto",
+          flexDirection: "column",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            mx: "auto",
+            mt: "1.5rem",
           }}
         >
-          {currentQuestion < questions.length && (
-            <Box
-              sx={{
-                border: "1px solid #92a2c6",
-                borderRadius: "0.3rem",
-                mt: "2rem",
-                p: "1rem",
-                width: "50%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+          <Button
+            sx={{
+              textTransform: "capitalize",
+              fontWeight: 400,
+              fontFamily: "Open Sans, sans-serif",
+              letterSpacing: "1px",
+              fontSize: "1rem",
+              display: "flex",
+              color: "#92a2c6",
+              border: "1px solid #92a2c6",
+              width: "8rem",
+            }}
+            onClick={handleClickDifficulty}
+            endIcon={<ArrowDropDownIcon />}
+          >
+            {difficulty ? difficulty : "Difficulty"}
+          </Button>
+          <Menu
+            id="difficulty-menu"
+            anchorEl={difficultyAnchorEl}
+            open={Boolean(difficultyAnchorEl)}
+            onClose={handleCloseDifficulty}
+            MenuListProps={{
+              "aria-labelledby": "menu-difficulty",
+            }}
+            PaperProps={{
+              sx: {
+                backgroundColor: "#1e2227",
+                color: "#92a2c6",
+              },
+            }}
+          >
+            <MenuItemMod
+              onClick={() => {
+                setDifficulty("easy");
+                handleCloseDifficulty();
               }}
             >
-              {questions.length > 0 &&
-                currentQuestion < questions.length &&
-                renderQuestion()}
-            </Box>
-          )}
-
+              Easy
+            </MenuItemMod>
+            <MenuItemMod
+              onClick={() => {
+                setDifficulty("medium");
+                handleCloseDifficulty();
+              }}
+            >
+              Medium
+            </MenuItemMod>
+            <MenuItemMod
+              onClick={() => {
+                setDifficulty("hard");
+                handleCloseDifficulty();
+              }}
+            >
+              Hard
+            </MenuItemMod>
+          </Menu>
+        </Box>
+        {difficulty && !isLoading && currentQuestion < questions.length && (
           <Box
             sx={{
-              // width: "50%",
+              border: "1px solid #92a2c6",
+              borderRadius: "0.3rem",
+              mt: "2rem",
+              p: "1rem",
+              width: {
+                xs: "80vw", // on extra small screens, set the width to 100%
+                sm: "70vw", // on small screens and up, set the width to 80%
+                md: "50vw", // on medium screens and up, set the width to 60%
+                lg: "40vw", // on large screens and up, set the width to 50%
+              },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              mt: "2rem",
+              // background: "#2e2e41",
             }}
           >
-            <Box sx={{}}>
+            {questions.length > 0 &&
+              currentQuestion < questions.length &&
+              renderQuestion()}
+          </Box>
+        )}
+
+        <Box
+          sx={{
+            // width: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mt: "2rem",
+          }}
+        >
+          <Box>
+            <Box>
               {questions.length > 0 &&
                 currentQuestion >= questions.length &&
                 renderScore()}
             </Box>
           </Box>
         </Box>
-      )}
+      </Box>
     </>
   );
 }
